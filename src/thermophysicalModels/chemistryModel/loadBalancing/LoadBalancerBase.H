@@ -43,6 +43,7 @@ SourceFiles
 #include "RecvBuffer.H"
 #include "SendBuffer.H"
 #include "runtime_assert.H"
+#include "DynamicList.H"
 
 #include <algorithm> //std::min/max element
 #include <numeric>   //std::accumulate
@@ -148,8 +149,9 @@ public:
 template <class T>
 DynamicList<T> LoadBalancerBase::allGather(const T& myData)
 {
-
-    DynamicList<T> ret(Pstream::nProcs(), myData);
+    // FE4 doesn't have proper DynamicList Constructor, so
+    List<T> retl(Pstream::nProcs(), myData);
+    DynamicList<T> ret(retl.xfer());
     ret[Pstream::myProcNo()] = myData;
 
     label tag = 1;
@@ -203,20 +205,32 @@ RecvBuffer<ET> LoadBalancerBase::sendRecv(
     if(Pstream::parRun())
     {
 
-        PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking);
+        //PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking);
 
         for(label i = 0; i < label(destinations.size()); ++i)
         {
-            UOPstream send(destinations[i], pBufs);
+            //UOPstream send(destinations[i], pBufs);
+            OPstream send
+            (
+                // NOTE: Maybe it's safer to set this to blocking
+                Pstream::nonBlocking,
+                destinations[i]
+            );
             send << send_buffer[i];
         }
 
-        pBufs.finishedSends();
+        //pBufs.finishedSends();
 
         ret.setSize(sources.size());
         for(label i = 0; i < label(sources.size()); ++i)
         {
-            UIPstream recv(sources[i], pBufs);
+            //UIPstream recv(sources[i], pBufs);
+            IPstream recv
+            (
+                // NOTE: Maybe it's safer to set this to blocking
+                Pstream::nonBlocking,
+                sources[i]
+            );
             recv >> ret[i];
         }
     }
