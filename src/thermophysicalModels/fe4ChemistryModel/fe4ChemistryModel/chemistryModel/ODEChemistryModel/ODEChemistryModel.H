@@ -98,6 +98,9 @@ protected:
         //- Thermodynamic data of the species
         const PtrList<ThermoType>& specieThermos_;
 
+        //- Temperature below which the reaction rates are assumed 0
+        scalar Treact_;
+
     // Private Member Functions
 
         //- Disallow default bitwise assignment

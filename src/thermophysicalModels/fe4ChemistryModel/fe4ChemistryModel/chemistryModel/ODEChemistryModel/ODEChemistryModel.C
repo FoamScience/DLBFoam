@@ -76,6 +76,14 @@ Foam::ODEChemistryModel<CompType, ThermoType>::ODEChemistryModel
     (
         dynamic_cast<const multiComponentMixture<ThermoType>&>
             (this->thermo()).speciesData()
+    ),
+    Treact_
+    (
+        CompType::template lookupOrDefault<scalar>
+        (
+            "Treact",
+            0
+        )
     )
 {
     // create the fields for the chemistry sources
