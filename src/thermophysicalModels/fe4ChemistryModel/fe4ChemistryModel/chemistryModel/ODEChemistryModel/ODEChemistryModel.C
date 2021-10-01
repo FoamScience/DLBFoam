@@ -26,6 +26,7 @@ License
 #include "ODEChemistryModel.H"
 #include "chemistrySolver.H"
 #include "reactingMixture.H"
+#include "multiComponentMixture.H"
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
@@ -68,7 +69,14 @@ Foam::ODEChemistryModel<CompType, ThermoType>::ODEChemistryModel
     ),
 
     RR_(nSpecie_),
-    coeffs_(nSpecie_ + 2)
+    coeffs_(nSpecie_ + 2),
+
+    deltaTChemMax_(CompType::template lookupOrDefault<scalar>("maxChemicalTimeStep", GREAT)),
+    specieThermos_
+    (
+        dynamic_cast<const multiComponentMixture<ThermoType>&>
+            (this->thermo()).speciesData()
+    )
 {
     // create the fields for the chemistry sources
     forAll(RR_, fieldI)

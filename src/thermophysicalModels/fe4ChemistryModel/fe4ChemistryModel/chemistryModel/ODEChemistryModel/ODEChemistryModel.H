@@ -92,6 +92,11 @@ protected:
         //- ODE coefficients
         scalarField coeffs_;
 
+        //- Maximum chemical time step
+        const scalar deltaTChemMax_;
+
+        //- Thermodynamic data of the species
+        const PtrList<ThermoType>& specieThermos_;
 
     // Private Member Functions
 
