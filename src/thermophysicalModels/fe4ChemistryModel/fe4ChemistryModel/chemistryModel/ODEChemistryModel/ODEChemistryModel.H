@@ -95,9 +95,6 @@ protected:
         //- Maximum chemical time step
         const scalar deltaTChemMax_;
 
-        //- Temperature below which the reaction rates are assumed 0
-        scalar Treact_;
-
     // Private Member Functions
 
         //- Disallow default bitwise assignment

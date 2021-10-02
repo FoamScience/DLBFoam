@@ -71,15 +71,7 @@ Foam::ODEChemistryModel<CompType, ThermoType>::ODEChemistryModel
     RR_(nSpecie_),
     coeffs_(nSpecie_ + 2),
 
-    deltaTChemMax_(CompType::template lookupOrDefault<scalar>("maxChemicalTimeStep", GREAT)),
-    Treact_
-    (
-        CompType::template lookupOrDefault<scalar>
-        (
-            "Treact",
-            0
-        )
-    )
+    deltaTChemMax_(CompType::template lookupOrDefault<scalar>("maxChemicalTimeStep", GREAT))
 {
     // create the fields for the chemistry sources
     forAll(RR_, fieldI)
