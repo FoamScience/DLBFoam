@@ -73,7 +73,7 @@ Foam::LBODEChemistryModel<CompType, ThermoType>::LBODEChemistryModel
     if(balancer_.log())
     {
         cpuSolveFile_ = logFile("cpu_solve.out");
-        cpuSolveFile_() << "        time" << tab
+        cpuSolveFile_() << "         time" << tab
                         << " getProblems" << tab  
                         << " updateState" << tab
                         << "     balance" << tab
@@ -336,6 +336,9 @@ Foam::LBODEChemistryModel<CompType, ThermoType>::getProblems
     scalarField concentration(this->nSpecie_);
 
     label counter = 0;
+
+    // NOTE: Treact here is GREAT. Hard-coding as 0 for tests
+    this->Treact_ = 0;
     forAll(T, celli)
     {
 

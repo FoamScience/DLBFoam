@@ -213,7 +213,7 @@ RecvBuffer<ET> LoadBalancerBase::sendRecv(
             OPstream send
             (
                 // NOTE: Maybe it's safer to set this to blocking
-                Pstream::nonBlocking,
+                Pstream::blocking,
                 destinations[i]
             );
             send << send_buffer[i];
@@ -229,7 +229,7 @@ RecvBuffer<ET> LoadBalancerBase::sendRecv(
             IPstream recv
             (
                 // NOTE: Maybe it's safer to set this to blocking
-                Pstream::nonBlocking,
+                Pstream::blocking,
                 sources[i]
             );
             recv >> ret[i];
