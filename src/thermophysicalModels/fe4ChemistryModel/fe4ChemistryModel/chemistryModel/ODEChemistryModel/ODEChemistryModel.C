@@ -74,18 +74,11 @@ Foam::ODEChemistryModel<CompType, ThermoType>::ODEChemistryModel
     deltaTChemMax_(CompType::template lookupOrDefault<scalar>("maxChemicalTimeStep", GREAT)),
     Treact_
     (
-        IOdictionary
+        CompType::template lookupOrDefault<scalar>
         (
-            IOobject
-            (
-                "chemistryProperties",
-                mesh.time().constant(),
-                mesh.db(),
-                IOobject::MUST_READ,
-                IOobject::NO_WRITE,
-                false
-            )
-        ).lookupOrDefault<scalar>("Treact", 0)
+            "Treact",
+            0
+        )
     )
 {
     // create the fields for the chemistry sources
