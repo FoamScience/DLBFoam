@@ -89,7 +89,7 @@ SourceFiles
 
 // Mixture fraction headers
 #include "atomicWeights.H"
-#include "psiReactionThermo.H"
+#include "basicMultiComponentMixture.H"
 
 namespace Foam
 {
@@ -101,7 +101,7 @@ public:
     mixtureFraction() = default;
 
     // Construct from dict and composition 
-    mixtureFraction(const dictionary& mixFracDict, const basicSpecieMixture& composition);
+    mixtureFraction(const dictionary& mixFracDict, const basicMultiComponentMixture& composition);
 
     scalar massFractionToMixtureFraction(const scalarField& massFraction) const;
 
@@ -115,8 +115,14 @@ private:
     
     //- Initialize the alpha and beta values needed for 
     // mixture fraction calculation
-    void initialize(const basicSpecieMixture& composition);
+    void initialize(const basicMultiComponentMixture& composition);
 
+    //- Specie molecular weights
+    inline scalar Wi(const basicMultiComponentMixture& composition, unsigned i) const
+    {
+        const word& name = composition.species()[i];
+        return atomicWeights[name];
+    }
 
 };
 

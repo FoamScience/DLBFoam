@@ -56,6 +56,22 @@ Foam::LBODEChemistryModel<CompType, ThermoType>::LBODEChemistryModel
             )
         )
     ), 
+    mapper_
+    (
+        IOdictionary
+        (
+            IOobject
+            (
+                "chemistryProperties",
+                mesh.time().constant(),
+                mesh,
+                IOobject::MUST_READ,
+                IOobject::NO_WRITE,
+                false
+            )
+        ),
+        this->thermo().composition()
+    ),
     cpuTimes_
     (
         IOobject
@@ -69,6 +85,20 @@ Foam::LBODEChemistryModel<CompType, ThermoType>::LBODEChemistryModel
         mesh,
         scalar(0.0)
     ),
+    refMap_
+    (
+        IOobject
+        (
+            "referenceMap",
+            mesh.time().timeName(),
+            mesh,
+            IOobject::NO_READ,
+            IOobject::AUTO_WRITE
+        ),
+        mesh,
+        scalar(0.0)
+    ),
+    cpuSolveFile_(),
     Treact_
     (
         IOdictionary
@@ -376,18 +406,15 @@ Foam::LBODEChemistryModel<CompType, ThermoType>::getProblems
             // NOTE: Solve everything, side-effects of not mapping reference solutions?
             // This check can only be done based on the concentration as the 
             // reference temperature is not known
-            //if (mapper_.shouldMap(massFraction))
-            //{                
-            //    mapped_problems.append(problem);
-            //    refMap_[celli] = 1;
-            //}
-
-            //else 
-            //{
+            if (mapper_.shouldMap(massFraction))
+            {                
+                mapped_problems.append(problem);
+                refMap_[celli] = 1;
+            } else {
                 solved_problems[counter] = problem;
                 counter++;
-                //refMap_[celli] = 2;
-            //}
+                refMap_[celli] = 2;
+            }
 
         }
         else
@@ -406,7 +433,7 @@ Foam::LBODEChemistryModel<CompType, ThermoType>::getProblems
     runtime_assert(solved_problems.size() + mapped_problems.size() == p.size(), "getProblems fails");
 
     // No mapped problems, solve everything
-    //this->map(mapped_problems, solved_problems);
+    this->map(mapped_problems, solved_problems);
     
 
     return solved_problems;
@@ -434,4 +461,40 @@ Foam::scalarField Foam::LBODEChemistryModel<CompType, ThermoType>::getVariable
     return concentration;
 }
 
+template <class CompType, class ThermoType>
+void Foam::LBODEChemistryModel<CompType, ThermoType>::map
+(
+    DynamicList<ChemistryProblem>& mapped_problems, 
+    DynamicList<ChemistryProblem>& solved_problems
+)
+{
+    if (mapped_problems.size() > 0)
+    {
+
+        ChemistryProblem refProblem = mapped_problems[0];
+        scalar refTemperature = refProblem.Ti;
+
+        ChemistrySolution refSolution(this->nSpecie_);
+        solveSingle(refProblem, refSolution);
+        refMap_[refProblem.cellid] = 0;
+
+        for (auto& problem : mapped_problems){
+
+            // Check that the refmap temperature condition is also fullfilled
+            if (mapper_.temperatureWithinRange(problem.Ti, refTemperature))
+            {
+                updateReactionRate(refSolution, problem.cellid);
+                cpuTimes_[problem.cellid] = refSolution.cpuTime;
+            }
+            // Otherwise solve
+            else 
+            {
+                solved_problems.append(problem);
+                refMap_[problem.cellid] = 2;
+            }
+        }
+
+
+    }
+}
 // ************************************************************************* //

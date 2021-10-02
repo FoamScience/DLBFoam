@@ -59,7 +59,7 @@ See also
 #include "Switch.H"
 #include "runTimeSelectionTables.H"
 #include "scalarField.H"
-#include "psiReactionThermo.H"
+//#include "psiReactionThermo.H"
 
 #include "mixtureFraction.H"
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -76,7 +76,7 @@ public:
     mixtureFractionRefMapper() = default;
 
     mixtureFractionRefMapper(
-        const dictionary& dict, const basicSpecieMixture& composition)
+        const dictionary& dict, const basicMultiComponentMixture& composition)
         : dict_(dict), coeffsDict_(dict.subDict("refmapping")),
           active_(coeffsDict_.lookupOrDefault<Switch>("active", false)),
           Ztolerance_(coeffsDict_.lookupOrDefault<scalar>("tolerance", 1e-4)),

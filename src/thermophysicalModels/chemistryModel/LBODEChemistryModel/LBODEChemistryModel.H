@@ -26,7 +26,7 @@ Class
 
 Description
     A port of LoadBalancedChemistryModel to FE-4 with Load-Balaning
-    functionality and no reference solution mapping.
+    functionality.
 
 Author
     Mohammed Elwardi Fadeli (elwardifadeli@gmail.com)
@@ -53,6 +53,7 @@ Note
 #include "OFstream.H"
 #include "IOmanip.H"
 #include "UniformField.H"
+#include "mixtureFractionRefMapper.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -75,8 +76,17 @@ protected:
         // Load balancing object
         LoadBalancer balancer_;
 
+        // Reference mapping object
+        mixtureFractionRefMapper mapper_;
+
         // Field containing chemistry CPU time information    
         volScalarField cpuTimes_;
+
+        // Field containing reference mapping information   
+        // 0 -> reference solution
+        // 1 -> mapped from reference solution
+        // 2 -> solved explicitly
+        volScalarField refMap_;
 
         // A file to output the balancing stats
         autoPtr<OFstream>        cpuSolveFile_;
@@ -124,6 +134,12 @@ protected:
             // NOTE: Is there a side-effect of discarding t0?
             return this->solve<UniformField<scalar>>(UniformField<scalar>(deltaT));
         }
+
+        //- Apply the reference cell mapping 
+        //TODO: This doesnt belong here and should be in reference cell mapping class. 
+        //      Implement a generic filter class from which the tabulation methods inherit and make 
+        //      the mapping base class inherit from that. 
+        void map(DynamicList<ChemistryProblem>& mapped_problems, DynamicList<ChemistryProblem>& solved_problems);
 
 public:
 
