@@ -89,12 +89,12 @@ Foam::LBODEChemistryModel<CompType, ThermoType>::LBODEChemistryModel
     {
         cpuSolveFile_ = logFile("cpu_solve.out");
         cpuSolveFile_() << "         time" << tab
-                        << " getProblems" << tab  
-                        << " updateState" << tab
-                        << "     balance" << tab
-                        << " solveBuffer" << tab
-                        << "   unbalance" << tab
-                        << "     rank ID" << endl;
+                        << "  getProblems" << tab  
+                        << "  updateState" << tab
+                        << "      balance" << tab
+                        << "  solveBuffer" << tab
+                        << "    unbalance" << tab
+                        << "      rank ID" << endl;
     }
 }
 
@@ -352,7 +352,6 @@ Foam::LBODEChemistryModel<CompType, ThermoType>::getProblems
 
     label counter = 0;
 
-    Info << Treact_ << endl;
     forAll(T, celli)
     {
 
