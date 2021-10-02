@@ -68,6 +68,21 @@ Foam::LBODEChemistryModel<CompType, ThermoType>::LBODEChemistryModel
         ),
         mesh,
         scalar(0.0)
+    ),
+    Treact_
+    (
+        IOdictionary
+        (
+            IOobject
+            (
+                "chemistryProperties",
+                mesh.time().constant(),
+                mesh.db(),
+                IOobject::MUST_READ,
+                IOobject::NO_WRITE,
+                false
+            )
+        ).lookupOrDefault<scalar>("Treact", 0)
     )
 {
     if(balancer_.log())
@@ -337,12 +352,11 @@ Foam::LBODEChemistryModel<CompType, ThermoType>::getProblems
 
     label counter = 0;
 
-    // NOTE: Treact here is GREAT. Hard-coding as 0 for tests
-    this->Treact_ = 0;
+    Info << Treact_ << endl;
     forAll(T, celli)
     {
 
-        if(T[celli] > this->Treact_)
+        if(T[celli] > Treact_)
         {
             for(label i = 0; i < this->nSpecie_; i++)
             {

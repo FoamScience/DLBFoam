@@ -81,6 +81,9 @@ protected:
         // A file to output the balancing stats
         autoPtr<OFstream>        cpuSolveFile_;
 
+        //- Temperature below which the reaction rates are assumed 0
+        scalar Treact_;
+
     // Protected Member Functions
 
         //- Disallow default bitwise assignment
