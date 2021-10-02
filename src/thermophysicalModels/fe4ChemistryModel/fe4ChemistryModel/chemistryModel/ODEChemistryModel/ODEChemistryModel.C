@@ -72,11 +72,6 @@ Foam::ODEChemistryModel<CompType, ThermoType>::ODEChemistryModel
     coeffs_(nSpecie_ + 2),
 
     deltaTChemMax_(CompType::template lookupOrDefault<scalar>("maxChemicalTimeStep", GREAT)),
-    specieThermos_
-    (
-        dynamic_cast<const multiComponentMixture<ThermoType>&>
-            (this->thermo()).speciesData()
-    ),
     Treact_
     (
         CompType::template lookupOrDefault<scalar>
