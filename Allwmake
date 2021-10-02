@@ -103,29 +103,7 @@ if [ $CLEAN_ALL == true ]; then
 fi
 
 
+# Compiles The chemistryModel lib without refMapping
+# and dependencies
+wmake libso src/thermophysicalModels/fe4ChemistryModel/fe4ChemistryModel
 wmake libso src/thermophysicalModels/chemistryModel
-##wmake libso src/ODE_DLB
-##
-##pushd tests/validation/pyjacTests/pyjacTestMechanism/lib  > /dev/null
-##    ./runCmake.sh
-##popd  > /dev/null
-##
-##wmake tests/unittests
-##
-##wmake tests/validation/pyjacTests/PSRTest
-##
-##pushd tests/unittests  > /dev/null
-##    ./test.sh
-##popd  > /dev/null
-##
-##pushd tests/validation/pyjacTests/PSRTest  > /dev/null
-##    ./runTests.sh
-##popd  > /dev/null
-##
-##cp -r utilities/mechanisms/yao tutorials/reactingFoam/shearlayer_DLB_pyJac/pyJac
-##cp utilities/CMakeLists.txt tutorials/reactingFoam/shearlayer_DLB_pyJac/pyJac/lib/
-##cp utilities/runCmake.sh tutorials/reactingFoam/shearlayer_DLB_pyJac/pyJac/lib/
-##
-##cp -r utilities/mechanisms/gri30 tutorials/chemFoam/gri_pyJac/pyJac
-##cp utilities/CMakeLists.txt tutorials/chemFoam/gri_pyJac/pyJac/lib/
-##cp utilities/runCmake.sh tutorials/chemFoam/gri_pyJac/pyJac/lib/

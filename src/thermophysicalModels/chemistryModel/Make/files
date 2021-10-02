@@ -8,4 +8,6 @@ loadBalancing/algorithms_DLB.C
 loadBalancing/runtime_assert.C
 loadBalancing/LoadBalancer.C
 
+LBODEChemistryModel/LBODEChemistryModels.C
+
 LIB = $(FOAM_USER_LIBBIN)/libchemistryModel_DLB

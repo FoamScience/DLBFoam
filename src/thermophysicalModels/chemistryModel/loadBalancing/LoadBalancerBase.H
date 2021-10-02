@@ -219,6 +219,7 @@ RecvBuffer<ET> LoadBalancerBase::sendRecv(
             send << send_buffer[i];
         }
 
+        // NOTE: Are we sure we don't need a barrier here????
         //pBufs.finishedSends();
 
         ret.setSize(sources.size());
